@@ -6,7 +6,7 @@ class Data():
     
     def get_yf(self, ticker, start_date, end_date):
         '''
-        A class method to access data from yahoo finance
+        A class method to access data from yahoo finance.
 
         Parameters
         ----------

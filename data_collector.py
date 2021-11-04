@@ -1,10 +1,12 @@
 import yfinance as yf
+import pandas as pd
 
 class Data():
-    def __init__(self):
-        pass
+    def __init__(self, ticker, start_date, end_date, X_col):
+        self.yf = Data.get_yf(ticker, start_date, end_date)
+        self.yf[X_col + '_Return'] = self.yf[X_col].pct_change(1)
     
-    def get_yf(self, ticker, start_date, end_date):
+    def get_yf(ticker, start_date, end_date, save_path = ''):
         '''
         A class method to access data from yahoo finance.
 
@@ -13,9 +15,11 @@ class Data():
         ticker : str
             Ticker(s) to  be accessed seperated by space.
         start_date : str
-            First date to be accessed format "YYYY-MM-DD"
+            First date to be accessed format "YYYY-MM-DD".
         end_date : str
-            Last date to be accessed format "YYYY-MM-DD"
+            Last date to be accessed format "YYYY-MM-DD".
+        save_path : str, optional
+            Path to save file. The default is ''.
 
         Returns
         -------
@@ -23,9 +27,33 @@ class Data():
             Historical market data from Yahoo! finance.
 
         '''
-        return yf.download(ticker, start = start_date, end = end_date)
+        
+        temp = yf.download(ticker, start = start_date, end = end_date)
+        
+        if save_path != '':
+            temp.to_csv(save_path)
+        
+        return temp
+    
+    def get_return(col):
+        '''
+        A class method to calculate daily return.
 
+        Parameters
+        ----------
+        col : DataFrame 
+            Column to be converted.
+
+        Returns
+        -------
+        DataFrame
+            Price converted return data.
+
+        '''
+        
+        return col.pct_change(1)
+        
+        
 
 if __name__ == '__main__':
-    try1 = Data()
-    try1.sp500 = try1.get_yf("^GSPC", "2010-01-01", "2020-12-31")
+    sp500 = Data("^GSPC", "2010-01-01", "2020-12-31", "Close")

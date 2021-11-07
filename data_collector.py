@@ -1,9 +1,15 @@
 import yfinance as yf
 import pandas as pd
+import pandas_datareader
+import datetime
 
 class Data():
+    def __init__(self):
+        pass
+
+class YahooData(Data):
     def __init__(self, ticker, start_date, end_date, X_col):
-        self.yf = Data.get_yf(ticker, start_date, end_date)
+        self.yf = YahooData.get_yf(ticker, start_date, end_date)
         self.yf[X_col + '_Return'] = self.yf[X_col].pct_change(1)
     
     def get_yf(ticker, start_date, end_date, save_path = ''):
@@ -53,7 +59,12 @@ class Data():
         
         return col.pct_change(1)
         
+class FamaFrenchData(Data):
         
-
+    def get_ff():
+        temp = pandas_datareader.DataReader(name = '', data_source = 'famafrench')
+        print(temp)
+        
 if __name__ == '__main__':
-    sp500 = Data("^GSPC", "2010-01-01", "2020-12-31", "Close")
+    sp500 = YahooData("^GSPC", "2010-01-01", "2020-12-31", "Close")
+    ff = FamaFrenchData()

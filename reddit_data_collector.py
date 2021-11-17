@@ -124,11 +124,13 @@ if __name__ == '__main__':
     data_s = reddit_20120101.clean_reddit('submission',
                                           'finance',
                                           datetime.datetime(2012,1,1).strftime('%s'), 
-                                          datetime.datetime(2012,1,2).strftime('%s'))
+                                          datetime.datetime(2012,12,31).strftime('%s'))
     data_c = reddit_20120101.clean_reddit('comment',
                                           'finance',
                                           datetime.datetime(2012,1,1).strftime('%s'), 
-                                          datetime.datetime(2012,1,2).strftime('%s'))
+                                          datetime.datetime(2012,12,31).strftime('%s'))
+    
+    
     
     
 

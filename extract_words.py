@@ -1,7 +1,7 @@
 """
 Chevy Robertson (crr78@georgetown.edu)
 ANLY 590: Neural Networks & Deep Learning
-Group Semester Project: Word Tokenization/Vectorization
+Group Semester Project: Word Extraction
 11/17/2021
 """
 

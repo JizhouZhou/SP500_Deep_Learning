@@ -15,9 +15,31 @@ class Data():
         pass
     
 class RedditData(Data):
-    def __init__(self):
-        pass
-        
+    def __init__(self, dtype, query, start_date, end_date, freq = 1):
+        delta = datetime.timedelta(days = freq)
+        if dtype == 'submission':
+            self.data = pd.DataFrame(columns = ['Date', 'Title', 'Text'])
+            while start_date <= end_date:
+                print(start_date.strftime(('%Y-%m-%d')))
+                temp = self.clean_reddit(dtype,
+                                         query,
+                                         start_date.strftime('%s'), 
+                                         (start_date+delta).strftime('%s'))
+                self.data = self.data.append({'Date' : start_date, 'Title': temp['title'].values, 'Text': temp['selftext'].values}, 
+                                             ignore_index = True)
+                start_date += delta
+        elif dtype == 'comment':
+            self.data = pd.DataFrame(columns = ['Date', 'Text'])
+            while start_date <= end_date:
+                print(start_date.strftime(('%Y-%m-%d')))
+                temp = self.clean_reddit(dtype,
+                                         query,
+                                         start_date.strftime('%s'), 
+                                         (start_date+delta).strftime('%s'))
+                self.data = self.data.append({'Date': start_date, 'Text': temp['body'].values},
+                                             ignore_index = True)
+                start_date += delta
+            
     
     def get_pushshift_data(data_type, **kwargs):
         '''
@@ -115,23 +137,33 @@ class RedditData(Data):
         temp['created_utc'] = [datetime.datetime.fromtimestamp(time) for time in temp['created_utc']]
         
         return temp
-        
-        
-        
+
 
 if __name__ == '__main__':
-    reddit_20120101 = RedditData()
-    data_s = reddit_20120101.clean_reddit('submission',
-                                          'finance',
-                                          datetime.datetime(2017,1,1).strftime('%s'), 
-                                          datetime.datetime(2017,1,2).strftime('%s'))
-    data_c = reddit_20120101.clean_reddit('comment',
-                                          'finance',
-                                          datetime.datetime(2017,1,1).strftime('%s'), 
-                                          datetime.datetime(2017,1,2).strftime('%s'))
+    reddit_20120101_S = RedditData('submission',
+                                    'finance',
+                                    datetime.datetime(2017,1,1), 
+                                    datetime.datetime(2017,1,10))
+    
+    reddit_20120101_C = RedditData('comment',
+                                    'finance',
+                                    datetime.datetime(2017,1,1), 
+                                    datetime.datetime(2017,1,10))
+    
+    # data_s = RedditData.clean_reddit('submission',
+    #                                  'finance',
+    #                                  datetime.datetime(2017,1,1).strftime('%s'), 
+    #                                  datetime.datetime(2017,1,2).strftime('%s'))
+    
+    # data_c = reddit_20120101.clean_reddit('comment',
+    #                                       'finance',
+    #                                       datetime.datetime(2017,1,1).strftime('%s'), 
+    #                                       datetime.datetime(2017,1,2).strftime('%s'))
     
     
     
     
+    
+
 
 

@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 import datetime
+from time import sleep
 
 class Data():
     def __init__(self):
@@ -20,6 +21,7 @@ class RedditData(Data):
         if dtype == 'submission':
             self.data = pd.DataFrame(columns = ['Date', 'Title', 'Text'])
             while start_date <= end_date:
+                sleep(1)
                 print(start_date.strftime(('%Y-%m-%d')))
                 temp = self.clean_reddit(dtype,
                                          query,
@@ -29,6 +31,7 @@ class RedditData(Data):
                                              ignore_index = True)
                 start_date += delta
         elif dtype == 'comment':
+            sleep(1)
             self.data = pd.DataFrame(columns = ['Date', 'Text'])
             while start_date <= end_date:
                 print(start_date.strftime(('%Y-%m-%d')))
@@ -139,16 +142,16 @@ class RedditData(Data):
         return temp
 
 
-if __name__ == '__main__':
-    reddit_20120101_S = RedditData('submission',
-                                    'finance',
-                                    datetime.datetime(2017,1,1), 
-                                    datetime.datetime(2017,1,10))
+# if __name__ == '__main__':
+    # reddit_20120101_S = RedditData('submission',
+    #                                 'finance',
+    #                                 datetime.datetime(2017,1,1), 
+    #                                 datetime.datetime(2017,1,10))
     
-    reddit_20120101_C = RedditData('comment',
-                                    'finance',
-                                    datetime.datetime(2017,1,1), 
-                                    datetime.datetime(2017,1,10))
+    # reddit_20120101_C = RedditData('comment',
+    #                                 'finance',
+    #                                 datetime.datetime(2017,1,1), 
+    #                                 datetime.datetime(2017,1,10))
     
     # data_s = RedditData.clean_reddit('submission',
     #                                  'finance',
@@ -159,11 +162,3 @@ if __name__ == '__main__':
     #                                       'finance',
     #                                       datetime.datetime(2017,1,1).strftime('%s'), 
     #                                       datetime.datetime(2017,1,2).strftime('%s'))
-    
-    
-    
-    
-    
-
-
-

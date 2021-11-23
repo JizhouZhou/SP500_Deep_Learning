@@ -38,7 +38,7 @@ class YahooData(Data):
         '''
         self.yf = YahooData.get_yf(ticker, start_date, end_date)
         self.yf[X_col + '_Return'] = self.yf[X_col].pct_change(1)
-        self.yf[X_col + '_Sign'] = (self.yf[X_col].pct_change(1))==0
+        self.yf[X_col + '_Sign'] = (self.yf[X_col].pct_change(1)) >= 0
     
     def get_yf(ticker, start_date, end_date, save_path = ''):
         '''

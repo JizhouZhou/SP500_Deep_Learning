@@ -21,26 +21,32 @@ class RedditData(Data):
         if dtype == 'submission':
             self.data = pd.DataFrame(columns = ['Date', 'Title', 'Text'])
             while start_date <= end_date:
-                sleep(1)
                 print(start_date.strftime(('%Y-%m-%d')))
-                temp = self.clean_reddit(dtype,
-                                         query,
-                                         start_date.strftime('%s'), 
-                                         (start_date+delta).strftime('%s'))
-                self.data = self.data.append({'Date' : start_date, 'Title': temp['title'].values, 'Text': temp['selftext'].values}, 
-                                             ignore_index = True)
+                try:
+                    temp = self.clean_reddit(dtype,
+                                             query,
+                                             start_date.strftime('%s'), 
+                                             (start_date+delta).strftime('%s'))
+                    self.data = self.data.append({'Date' : start_date, 'Title': temp['title'].values, 'Text': temp['selftext'].values}, 
+                                                 ignore_index = True)
+                except:
+                    pass
+                
                 start_date += delta
         elif dtype == 'comment':
-            sleep(1)
             self.data = pd.DataFrame(columns = ['Date', 'Text'])
             while start_date <= end_date:
                 print(start_date.strftime(('%Y-%m-%d')))
-                temp = self.clean_reddit(dtype,
-                                         query,
-                                         start_date.strftime('%s'), 
-                                         (start_date+delta).strftime('%s'))
-                self.data = self.data.append({'Date': start_date, 'Text': temp['body'].values},
-                                             ignore_index = True)
+                try:
+                    temp = self.clean_reddit(dtype,
+                                             query,
+                                             start_date.strftime('%s'), 
+                                             (start_date+delta).strftime('%s'))
+                    self.data = self.data.append({'Date': start_date, 'Text': temp['body'].values},
+                                                 ignore_index = True)
+                except:
+                    pass
+                
                 start_date += delta
             
     

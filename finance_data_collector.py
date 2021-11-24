@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import pandas_datareader
 from datetime import datetime
+import pickle
 
 class Data():
     def __init__(self):
@@ -148,6 +149,9 @@ class FamaFrenchData(Data):
         
 if __name__ == '__main__':
     sp500 = YahooData("^GSPC", "2010-01-01", "2020-12-31", "Close")
-    ff = FamaFrenchData(datetime(2010, 1, 1), datetime(2020, 12, 31))
+    ff = FamaFrenchData(datetime(2015, 1, 1), datetime(2019, 12, 31))
     
+    file = open('sp500.txt', 'wb')
+    pickle.dump(sp500, file)
+    file.close
     

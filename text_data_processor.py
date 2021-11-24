@@ -5,6 +5,7 @@ from time import sleep
 import re
 from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import CountVectorizer
+import pickle
 
 
 class TextDataProcessor():
@@ -120,8 +121,12 @@ class TextDataProcessor():
         
 if __name__ == '__main__':
     reddit_10 = TextDataProcessor('finance',
-                                  datetime(2019,3,1), 
-                                  datetime(2019,3,2))
+                                  datetime(2015,1,1), 
+                                  datetime(2019,12,31))
     reddit_10.vectorize()
+    
+    file = open('reddit_10.txt', 'wb')
+    pickle.dump(reddit_10, file)
+    file.close()
     
     

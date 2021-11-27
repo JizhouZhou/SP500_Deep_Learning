@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
+import requests
 import re
 from datetime import datetime
 from nltk.stem import PorterStemmer
@@ -29,6 +30,7 @@ from sklearn.metrics import confusion_matrix
 from time import sleep
 from text_data_processor import TextDataProcessor
 from finance_data_collector import YahooData
+from urllib.request import urlopen
 
 class TrainANN():  
     def __init__(self, dir_y, dir_X):
@@ -534,7 +536,7 @@ class TrainANN():
         
         
 if __name__ == '__main__':
-    df = TrainANN('sp500.txt', 'reddit_10.txt')
+    df = TrainANN('sp500.txt', requests.get('http://zhou.georgetown.domains/reddit_10.txt'))
     new_y = [i[1] for i in df.y]
     new_y = np.asarray(new_y).astype('float32')
     new_y = new_y.reshape(len(new_y), 1)

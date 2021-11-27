@@ -25,6 +25,20 @@ from sklearn.feature_extraction.text import CountVectorizer
 from text_data_processor import TextDataProcessor
 from finance_data_collector import YahooData
 
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+import numpy as np
+import os
+from keras.models import Sequential
+from keras.layers import Embedding, Flatten, Dense
+from keras import models, layers
+from keras import optimizers
+from keras import regularizers
+from keras.layers import SimpleRNN
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.metrics import roc_curve, auc, roc_auc_score
+
 class TrainANN():  
     def __init__(self, dir_y, dir_X):
         file_X = open(dir_X, 'rb')
@@ -141,9 +155,64 @@ class TrainANN():
         
         self.X = temp
                     
+    def embedding(self,max_words = 100,full_query = True,maxlen = 20):
+        """
+        an alternative method to
+        :param max_words: max words to take from each reddit
+        :param full_query: BOOL, optional
+            Include comment or not. The default is True.
+        :param maxlen: input length of the model
+        :return:
+        """
+
+        ## to-do: add glove.6B file
 
 
-    def CNN1D(self, 
+        if full_query:
+            temp_d = self.X_df['Title'].astype(str) + ' ' + self.X_df['Text_sub'].astype(str) + ' ' + self.X_df[
+                'Text_com'].astype(str)
+        else:
+            temp_d = self.X_df['Title'].astype(str) + ' ' + self.X_df['Text_sub'].astype(str)
+
+
+        tokenizer = Tokenizer(num_words=max_words)
+        tokenizer.fit_on_texts(temp_d)
+        sequences = tokenizer.texts_to_sequences(temp_d)
+
+        word_index = tokenizer.word_index
+        print('Found %s unique tokens.' % len(word_index))
+        self.X = pad_sequences(sequences, maxlen=maxlen)
+        self.y = np.asarray(self.y[:,0])
+        print('Shape of data tensor:', self.X.shape)
+        print('Shape of label tensor:', self.y.shape)
+
+
+        glove_dir = '/Users/irene/Downloads/glove.6B'
+        embeddings_index = {}
+        f = open(os.path.join(glove_dir, 'glove.6B.50d.txt'))
+        for line in f:
+            values = line.split()
+            word = values[0]
+            coefs = np.asarray(values[1:], dtype='float32')
+            embeddings_index[word] = coefs
+        f.close()
+        print('Found %s word vectors.' % len(embeddings_index))
+
+        embedding_dim = 50
+        self.embedding_dim = embedding_dim
+        embedding_matrix = np.zeros((max_words, embedding_dim))
+        for word, i in word_index.items():
+            if i < max_words:
+                embedding_vector = embeddings_index.get(word)
+                if embedding_vector is not None:
+                    embedding_matrix[i] = embedding_vector
+
+        self.embedding_matrix = embedding_matrix
+
+
+
+
+    def CNN1D(self,
               max_features = 10000, 
               embed_dim = 10, 
               maxlen = 1000, 
@@ -310,7 +379,7 @@ class TrainANN():
             print('loss:', test[0])
             print('accuracy:', test[1])
             
-    def LSTM(self):
+    def LSTM(self,plot = True, save_model= True,max_words = 100,maxlen = 20):
         '''
         Yunfei
 
@@ -319,7 +388,35 @@ class TrainANN():
         None.
 
         '''
-        pass
+        model = Sequential()
+        model.add(Embedding(max_words, self.embedding_dim, input_length=maxlen))
+
+        # FIRST LAYER
+
+        model.add(layers.LSTM(units = 32, dropout=0.2, recurrent_dropout=0.2))
+        model.add(layers.Dense(1, activation='sigmoid'))
+        model.layers[0].set_weights([self.embedding_matrix])
+        model.layers[0].trainable = False
+        model.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc'])
+        model.summary()
+
+        training_samples = 150
+        validation_samples = 20
+
+        x_train = self.X[:training_samples]
+        y_train = self.y[:training_samples]
+        x_val = self.X[training_samples: training_samples + validation_samples]
+        y_val = self.y[training_samples: training_samples + validation_samples]
+
+
+        history = model.fit(x_train, y_train, epochs=10, batch_size=216, validation_data=(x_val, y_val))
+        if plot:
+            pass
+            #report(history,title="LSTM")
+        if save_model:
+            model.save('LSTM.h5')
+
+
     
     def LSM(self):
         # Chevy
@@ -327,4 +424,6 @@ class TrainANN():
     
 if __name__ == '__main__':
     df = TrainANN('sp500.txt', 'reddit_10.txt')
-    df.vectorize()
+
+    df.embedding(max_words = 100,maxlen = 20)
+    df.LSTM()

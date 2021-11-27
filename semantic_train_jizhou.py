@@ -286,7 +286,7 @@ class TrainANN():
             
     def evaluate_model(self, model_type):
         '''
-        A class method to evaluate model
+        A class method to evaluate model.
 
         Parameters
         ----------

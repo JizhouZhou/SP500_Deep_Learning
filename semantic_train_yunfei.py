@@ -415,15 +415,13 @@ class TrainANN():
             #report(history,title="LSTM")
         if save_model:
             model.save('LSTM.h5')
-
-
-    
+            
     def LSM(self):
         # Chevy
         pass
     
 if __name__ == '__main__':
     df = TrainANN('sp500.txt', 'reddit_10.txt')
-
-    df.embedding(max_words = 100,maxlen = 20)
+    df.embedding(max_words = 100, maxlen = 20)
     df.LSTM()
+    

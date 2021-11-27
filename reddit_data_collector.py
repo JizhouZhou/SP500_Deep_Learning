@@ -30,7 +30,25 @@ class RedditData(Data):
                     self.data = self.data.append({'Date' : start_date, 'Title': temp['title'].values, 'Text': temp['selftext'].values}, 
                                                  ignore_index = True)
                 except:
-                    pass
+                    try:
+                        sleep(1)
+                        temp = self.clean_reddit(dtype,
+                                                 query,
+                                                 start_date.strftime('%s'), 
+                                                 (start_date+delta).strftime('%s'))
+                        self.data = self.data.append({'Date' : start_date, 'Title': temp['title'].values, 'Text': temp['selftext'].values}, 
+                                                     ignore_index = True)
+                    except:
+                        try:
+                            sleep(2)
+                            temp = self.clean_reddit(dtype,
+                                                     query,
+                                                     start_date.strftime('%s'), 
+                                                     (start_date+delta).strftime('%s'))
+                            self.data = self.data.append({'Date' : start_date, 'Title': temp['title'].values, 'Text': temp['selftext'].values}, 
+                                                         ignore_index = True)
+                        except:
+                            pass
                 
                 start_date += delta
         elif dtype == 'comment':
@@ -45,7 +63,25 @@ class RedditData(Data):
                     self.data = self.data.append({'Date': start_date, 'Text': temp['body'].values},
                                                  ignore_index = True)
                 except:
-                    pass
+                    try:
+                        sleep(1)
+                        temp = self.clean_reddit(dtype,
+                                                 query,
+                                                 start_date.strftime('%s'), 
+                                                 (start_date+delta).strftime('%s'))
+                        self.data = self.data.append({'Date': start_date, 'Text': temp['body'].values},
+                                                     ignore_index = True)
+                    except:
+                        try:
+                            sleep(2)
+                            temp = self.clean_reddit(dtype,
+                                                     query,
+                                                     start_date.strftime('%s'), 
+                                                     (start_date+delta).strftime('%s'))
+                            self.data = self.data.append({'Date': start_date, 'Text': temp['body'].values},
+                                                         ignore_index = True)
+                        except:
+                            pass
                 
                 start_date += delta
             

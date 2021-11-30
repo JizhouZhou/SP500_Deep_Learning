@@ -1,5 +1,3 @@
 # SP500_Deep_Learning_Project
 
-## To-do
-- Inject 'Sleep' Time to API
-- Real_word param
+## Predicting Stock Returns Using Deep Learning Models
